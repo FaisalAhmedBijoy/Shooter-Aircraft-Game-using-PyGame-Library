@@ -90,7 +90,7 @@ for i in range(7):
 # add the paddle to the list of sprites
 all_sprites_list.add(paddle)
 all_sprites_list.add(ball)
-print(all_sprites_list)
+# print(all_sprites_list)
 
 '''
 step 4: Main program loop
@@ -131,8 +131,6 @@ while carryOn:
     
         
     
-    
-    
     # Check if the ball is bounhing against any of the 4 walls
     if ball.rect.x>=790:
         ball.velocity[0]= -ball.velocity[0]
@@ -162,7 +160,7 @@ while carryOn:
    # print('velocity :',ball.velocity)
    # print("Position: ",ball.rect)
     print('Brick x',brick.rect.x,end='')
-    print('  Brick y',brick.rect.y)
+    print('Brick y',brick.rect.y)
 
     
         
