@@ -17,21 +17,22 @@ class Ball(pygame.sprite.Sprite):
         
         # Drawinng the ball rectangle
         pygame.draw.rect(self.image,color,[0,0,width,height])
-        self.velocity=[randint(4,8),randint(-8,8)]
+        # self.velocity=[randint(4,8),randint(-8,8)]
+        self.velocity=[0,-10]
         
         # Fetch the rectangle object that has the dimension of the image
         self.rect=self.image.get_rect()
     
     def update(self):
-        # self.rect.x+=self.velocity[0]
-        # self.rect.y+=self.velocity[1]
+        self.rect.x+=self.velocity[0]
+        self.rect.y+=self.velocity[1]
         # ball always vertical direction
-        self.rect.x+=0
-        self.rect.y+=self.velocity[0]
+    
         
     def bounce(self):
         self.velocity[0]= -self.velocity[0]
-        self.velocity[1] =randint(-8,8)
+        # self.velocity[1] =randint(-8,8)
+        self.velocity[1]=-10
 
 # make the ball object
 if __name__ == '__main__':
