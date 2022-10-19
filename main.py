@@ -53,10 +53,6 @@ ball.rect.y=195
 all_sprites_list.add(ball)
 balls.append(ball)
 
-# # Create a group of balls
-# ball_group=pygame.sprite.Group()
-# ball_group.add(ball)
-
 
 all_bricks=pygame.sprite.Group()
 for i in range(7):
@@ -111,14 +107,7 @@ while carryOn:
         paddle.moveLeft(5)
     if keys[pygame.K_RIGHT]:
         paddle.moveRight(5)
-    if keys[pygame.K_UP]:
-        
-        ball=Ball(WHITE,10,10)
-        all_sprites_list.add(ball)
-        ball.rect.x=paddle.rect.x+45
-        ball.rect.y=paddle.rect.y
-        balls.append(ball)
-        # paddle.moveUp(5)
+
     if keys[pygame.K_DOWN]:
         paddle.moveDown(5)
         
@@ -128,13 +117,13 @@ while carryOn:
 
     # Check if there is a car collision
     brick_collision_list=pygame.sprite.spritecollide(ball,all_bricks,False)
-    
+   
 
         
     for brick in brick_collision_list:
         ball.bounce()
         score +=1
-        # ball.kill()
+        ball.kill()
         brick.kill()
        
       
@@ -151,6 +140,8 @@ while carryOn:
     
     for ball in balls:
         brick_collision_list=pygame.sprite.spritecollide(ball,all_bricks,False)
+    
+        
         for brick in brick_collision_list:
             # ball.bounce()
             score +=1
@@ -168,8 +159,18 @@ while carryOn:
                 
                 # stop the Game
                 carryOn=False
-    for ball in balls:
-        ball.rect.y-=1
+    if keys[pygame.K_UP]:
+        
+        # ball=Ball(WHITE,10,10)
+        all_sprites_list.add(ball)
+        ball.rect.x=paddle.rect.x+50
+        ball.rect.y=paddle.rect.y
+        balls.append(ball)
+
+        for brick in all_bricks:
+            brick.rect.y += 2
+    # for ball in balls:
+    #     ball.rect.y-=1
 
     #--- Drawing code should go here
     # First clear the screen to dark blue
@@ -193,5 +194,6 @@ while carryOn:
     clock.tick(60)
 # Once we have exited the main program loop we can stop the game
 pygame.quit()
+
     
     
