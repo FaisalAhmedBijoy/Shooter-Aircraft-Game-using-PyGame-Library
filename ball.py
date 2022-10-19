@@ -23,9 +23,18 @@ class Ball(pygame.sprite.Sprite):
         self.rect=self.image.get_rect()
     
     def update(self):
-        self.rect.x+=self.velocity[0]
-        self.rect.y+=self.velocity[1]
+        # self.rect.x+=self.velocity[0]
+        # self.rect.y+=self.velocity[1]
+        # ball always vertical direction
+        self.rect.x+=0
+        self.rect.y+=self.velocity[0]
         
     def bounce(self):
         self.velocity[0]= -self.velocity[0]
         self.velocity[1] =randint(-8,8)
+
+# make the ball object
+if __name__ == '__main__':
+    ball=Ball(BLACK,10,10)
+    print(ball.rect.x,ball.rect.y)
+    print(ball.velocity)

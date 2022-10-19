@@ -59,6 +59,11 @@ ball=Ball(LIGHTBLUE,10,10)
 ball.rect.x=345
 ball.rect.y=195
 
+# Create a group of balls
+ball_group=pygame.sprite.Group()
+ball_group.add(ball)
+
+
 all_bricks=pygame.sprite.Group()
 for i in range(7):
     brick=Brick(RED,80,30)
