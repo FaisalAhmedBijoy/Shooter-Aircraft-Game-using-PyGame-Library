@@ -121,10 +121,10 @@ while carryOn:
 
         
     for brick in brick_collision_list:
-        ball.bounce()
+        # ball.bounce()
         score +=1
         ball.kill()
-        brick.kill()
+        # brick.kill()
        
       
         if len(all_bricks) ==0:
@@ -168,7 +168,19 @@ while carryOn:
         balls.append(ball)
 
         for brick in all_bricks:
-            brick.rect.y += 2
+            brick.rect.y += 1
+
+        if brick.rect.y > 550:
+                font=pygame.font.Font(None,74)
+                text=font.render("GAME OVER",1,WHITE)
+                screen.blit(text,(200,300))
+                pygame.display.flip()
+                pygame.time.wait(3000)
+                    
+                # stop the Game
+                carryOn=False
+    
+   
     # for ball in balls:
     #     ball.rect.y-=1
 
