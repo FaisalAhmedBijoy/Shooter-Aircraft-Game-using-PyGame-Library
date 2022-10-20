@@ -36,9 +36,6 @@ pygame.display.set_caption("Shooter Aircraft Breakout Game")
 # this will be a list that will contain all the sprites we intend
 all_sprites_list=pygame.sprite.Group()
 
-# Add thepaddles to the list of sprites
-# all_sprites_list.add(paddleA)
-# all_sprites_list.add(paddleB)
 
 # Create the paddle 
 paddle=Paddle(LIGHTBLUE,100,50)
@@ -49,8 +46,8 @@ paddle.rect.y=560
 balls=[]
 ball=Ball(LIGHTBLUE,10,10)
 ball.rect.x=400
-ball.rect.y=195
-all_sprites_list.add(ball)
+ball.rect.y=560
+# all_sprites_list.add(ball)
 balls.append(ball)
 
 
