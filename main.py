@@ -1,20 +1,22 @@
 """
 Step 1: import pygame library
 """
-from cmath import rect
-import random
+
+
+import sys
 import pygame
 import config as cfg
 from paddle import Paddle
 from ball import Ball
 from brick import Brick
+from game_menu import *
 pygame.init()
 
 score=cfg.SCORE
 lives=cfg.LIVES
 
 # set window size
-size=(cfg.WINDOW_HEIGHT,cfg.WINDOW_WIDTH)
+size=(cfg.WINDOW_WIDTH,cfg.WINDOW_HEIGHT)
 screen=pygame.display.set_mode(size)
 pygame.display.set_caption("Shooter Aircraft Breakout Game")
 balls=[]
@@ -22,6 +24,8 @@ balls=[]
 # this will be a list that will contain all the sprites we intend
 all_sprites_list=pygame.sprite.Group()
 all_bricks=pygame.sprite.Group()
+
+
 
 def paddle_and_ball_initialization():
     # Create the paddle 
@@ -65,7 +69,7 @@ def score_and_lives():
 def game_win_function():
     font=pygame.font.Font(None,74)
     text=font.render("Win, Congratulations!",1,cfg.WHITE)
-    screen.blit(text,(200,300))
+    screen.blit(text,(150,300))
     pygame.display.flip()
     pygame.time.wait(3000)
 
@@ -111,14 +115,8 @@ def game_end_display_function(clock):
     clock.tick(100)
     
 
-if __name__ == "__main__":
- 
-    carryOn=True
-    clock=pygame.time.Clock()
-
-    all_bricks=brick_design_on_display()
-    paddle,ball=paddle_and_ball_initialization()
-
+def aircraft_shooter_game_screen(carryOn,all_sprites_list,all_bricks,paddle,ball,balls,clock,score,lives):
+    
     while carryOn and lives>0: 
         for event in pygame.event.get():
             if event.type ==pygame.QUIT:
@@ -149,3 +147,60 @@ if __name__ == "__main__":
         game_end_display_function(clock)      
     pygame.quit()
         
+
+
+if __name__ == "__main__":
+
+    # make a game start menu program
+    mainClock = pygame.time.Clock()
+    font = pygame.font.SysFont(None, 30)
+    screen = pygame.display.set_mode((cfg.WINDOW_WIDTH, cfg.WINDOW_HEIGHT),0,32)
+    click = False
+    while True:
+        screen.fill((0,190,255))
+        draw_text('Main Menu', font, (0,0,0), screen, 250, 40)
+ 
+        mx, my = pygame.mouse.get_pos()
+
+        #creating buttons
+        button_1 = pygame.Rect(200, 100, 200, 50)
+        button_2 = pygame.Rect(200, 180, 200, 50)
+
+        #defining functions when a certain button is pressed
+        if button_1.collidepoint((mx, my)):
+            if click:
+                carryOn=True
+                clock=pygame.time.Clock()
+                all_bricks=brick_design_on_display()
+                paddle,ball=paddle_and_ball_initialization()
+                aircraft_shooter_game_screen(carryOn,all_sprites_list,all_bricks,paddle,ball,balls,clock,score,lives)
+        
+        if button_2.collidepoint((mx, my)):
+            if click:
+                options()
+        pygame.draw.rect(screen, (255, 0, 0), button_1)
+        pygame.draw.rect(screen, (255, 0, 0), button_2)
+ 
+        #writing text on top of button
+        draw_text('PLAY', font, (255,255,255), screen, 270, 115)
+        draw_text('OPTIONS', font, (255,255,255), screen, 250, 195)
+
+        click = False
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+            if event.type == MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    click = True
+ 
+        pygame.display.update()
+        mainClock.tick(60)
+
+    # game logic start
+    
+
