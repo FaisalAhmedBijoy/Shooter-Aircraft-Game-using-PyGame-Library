@@ -1,224 +1,232 @@
-"""
-Step 1: import pygame library
-"""
+import sys
+import time
 import pygame
-# import paddle class
+import config as cfg
 from paddle import Paddle
 from ball import Ball
 from brick import Brick
+from game_menu import *
+from pygame.locals import *
+
 pygame.init()
+count=1
+score=cfg.SCORE
+time_duration_count=cfg.TIME_DURATION_COUNT
+font = pygame.font.SysFont(None, 30)
 
-'''
-Step 2: Define colours in the game
-'''
-#Define some colors in RGB format
-WHITE=(255,255,255)
-DARKBLUE=(36,90,190)
-LIGHTBLUE=(0,176,240)
-RED=(255,0,0)
-ORANGE=(255,100,0)
-YELLOW=(255,255,0)
-GREEN=(0,255,0)
-
-score=100
-lives=10
-
-
-'''
-Step 3: open a new window
-'''
 # set window size
-size=(800,600)
+size=(cfg.WINDOW_WIDTH,cfg.WINDOW_HEIGHT)
 screen=pygame.display.set_mode(size)
 pygame.display.set_caption("Shooter Aircraft Breakout Game")
-'''
-# Responding the keystroke events
-paddleA=Paddle(WHITE,10,100)
-paddleA.rect.x=20
-paddleA.rect.y=200
-
-paddleB=Paddle(WHITE,10,100)
-paddleB.rect.x=670
-paddleB.rect.y=200
-'''
+balls=[]
 
 # this will be a list that will contain all the sprites we intend
 all_sprites_list=pygame.sprite.Group()
-
-# Add thepaddles to the list of sprites
-# all_sprites_list.add(paddleA)
-# all_sprites_list.add(paddleB)
-
-# Create the paddle 
-paddle=Paddle(LIGHTBLUE,100,50)
-paddle.rect.x=350
-paddle.rect.y=560
-
-# Create the ball sprite
-ball=Ball(LIGHTBLUE,10,10)
-ball.rect.x=345
-ball.rect.y=195
-
 all_bricks=pygame.sprite.Group()
-for i in range(7):
-    brick=Brick(RED,80,30)
-    brick.rect.x=60+i*100
-    brick.rect.y=100
-    all_sprites_list.add(brick)
-    all_bricks.add(brick)
 
-for i in range(7):
-    brick = Brick(ORANGE,80,30)
-    brick.rect.x = 60 + i* 100
-    brick.rect.y = 140
-    all_sprites_list.add(brick)
-    all_bricks.add(brick)
-for i in range(7):
-    brick = Brick(YELLOW,80,30)
-    brick.rect.x = 60 + i* 100
-    brick.rect.y = 180
-    all_sprites_list.add(brick)
-    all_bricks.add(brick)
+
+
+def paddle_and_ball_initialization():
+    # Create the paddle 
+    paddle=Paddle(cfg.LIGHTBLUE,100,50)
+    paddle.rect.x=350
+    paddle.rect.y=560
+
+    # Create the ball sprite
     
-for i in range(7):
-    brick = Brick(GREEN,80,30)
-    brick.rect.x = 60 + i* 100
-    brick.rect.y = 220
-    all_sprites_list.add(brick)
-    all_bricks.add(brick)
+    ball=Ball(cfg.LIGHTBLUE,10,10)
+    ball.rect.x=400
+    ball.rect.y=560
+    balls.append(ball)
+    all_sprites_list.add(paddle)
 
-# add the paddle to the list of sprites
-all_sprites_list.add(paddle)
-all_sprites_list.add(ball)
-print(all_sprites_list)
+    return paddle, ball
 
-'''
-step 4: Main program loop
-Capturing Events: Used to constantly “listen” to user inputs and react to these. It could be when the user use the keyboard or the mouse.
-Implementing the Game Logic. What happens when the game is running? Are cars moving forward, aliens falling from the sky, ghosts chasing you, etc.
-Refreshing the screen by redrawing the stage and the sprites.
-'''
-# the lopp will carry on until exit the game
-carryOn=True
 
-#the clock will be used to control how fast screen upload updates
-clock=pygame.time.Clock()
 
-#------------ Main program loop
-while carryOn:
-    # main event loop
-    for event in pygame.event.get(): #user did something
-        if event.type ==pygame.QUIT: # if user click close
-            carryOn=False # Flag that we are done to exit
-        elif event.type==pygame.KEYDOWN:
-            if event.key==pygame.K_x:
-                carryOn=False
-    
-    # Moving the paddle when the use uses the arrow key
-    keys=pygame.key.get_pressed()
-    if keys[pygame.K_LEFT]:
-        paddle.moveLeft(5)
-    if keys[pygame.K_RIGHT]:
-        paddle.moveRight(5)
-    if keys[pygame.K_UP]:
-        paddle.moveUp(5)
-    if keys[pygame.K_DOWN]:
-        paddle.moveDown(5)
+def brick_design_on_display():
         
     
-    #-------- Game logic should go there
-    all_sprites_list.update()
-    
-        
-    
-    
-    
-    # Check if the ball is bounhing against any of the 4 walls
-    if ball.rect.x>=790:
-        ball.velocity[0]= -ball.velocity[0]
-    if ball.rect.x<=0:
-        ball.velocity[0]= -ball.velocity[0]
-    if ball.rect.y>590:
-        ball.velocity[1]= -ball.velocity[1]
-        lives-=1
-        if lives==0:
-            # Display Game over for 3 seconds
-            font=pygame.font.Font(None,74)
-            text=font.render("GAME OVER",1,WHITE)
-            screen.blit(text,(250,300))
-            pygame.display.flip()
-            pygame.time.wait(3000)
-            
-            # stop the game
-            carryOn=False
-            
-    if ball.rect.y<40:
-        ball.velocity[1]= -ball.velocity[1]
-    
-    '''
-    if the ball touch any side : up, down, left ,right wall
-    then the ball set same velocity but reverse position 
-    '''
-   # print('velocity :',ball.velocity)
-   # print("Position: ",ball.rect)
-    print('Brick x',brick.rect.x,end='')
-    print('  Brick y',brick.rect.y)
+    colors=[cfg.RED,cfg.ORANGE,cfg.YELLOW,cfg.GREEN]
+    for i in range(7):
+        for j in range(4):
+            brick = Brick(colors[j],80,30)
+            brick.rect.x = 60 + i* 100
+            brick.rect.y = 100+j*40
+            all_sprites_list.add(brick)
+            all_bricks.add(brick)
+    return all_bricks
+   
 
-    
-        
-    # Detect collisions between the ball and paddles
-    if pygame.sprite.collide_mask(ball,paddle):
-        ball.rect.x -=ball.velocity[0]
-        ball.rect.y -=ball.velocity[1]
-        ball.bounce()
-        
-    
-    
-    # Check if there is a car collision
-    brick_collision_list=pygame.sprite.spritecollide(ball,all_bricks,False)
-    
-
-        
-    for brick in brick_collision_list:
-        ball.bounce()
-        score +=1
-        brick.kill()
-        # Brick Fallen 5 pixels per loop
-        for brick in all_bricks:
-            brick.rect.y +=5
-      
-        if len(all_bricks) ==0:
-            # Display level complete 3 seconds
-            font=pygame.font.Font(None,74)
-            text=font.render("LEVEL WIN",1,WHITE)
-            screen.blit(text,(200,300))
-            pygame.display.flip()
-            pygame.time.wait(3000)
-            
-            # stop the Game
-            carryOn=False
-    
-    #--- Drawing code should go here
-    # First clear the screen to dark blue
-    screen.fill(DARKBLUE)
-    pygame.draw.line(screen,WHITE,[0,38],[800,38],2)
-    
-    # now lets draw all the sprites in one go
-    all_sprites_list.draw(screen)
-    
-    # Display the score and the number of lives at the top of the window
+def score_and_time_duration_calucation(score,time_duration_count):
     font=pygame.font.Font(None,34)
-    text=font.render("Score: "+str(score),1,WHITE)
+    text=font.render("Score: "+str(score),1,cfg.WHITE)
     screen.blit(text,(20,10))
-    
-    text=font.render("Lives: "+str(lives),1,WHITE)
+    text=font.render("Time: "+str(time_duration_count),1,cfg.WHITE)
     screen.blit(text,(650,10))
-    
-    # Go ahead and update the screen with we've drawn
+
+def game_win_function(score,time_duration_count):
+    font=pygame.font.Font(None,65)
+    text=font.render("Win, Congratulations!",1,cfg.WHITE)
+    screen.blit(text,(150,200))
     pygame.display.flip()
-    # Limit to 60 frame per second
-    clock.tick(60)
-# Once we have exited the main program loop we can stop the game
-pygame.quit()
+    player_score_and_time_show_in_display(score,time_duration_count)
+    pygame.time.wait(3000)
+
+
+def player_score_and_time_show_in_display(score,time_duration_count):
+    font=pygame.font.Font(None,45)
+    text=font.render('Player score: '+str(score),1,cfg.GREEN)
+    screen.blit(text,(200,300))
+    pygame.display.flip()
     
+    text=font.render('Total time: '+str(time_duration_count),1,cfg.GREEN)
+    screen.blit(text,(200,350))
+    pygame.display.flip()
+
+
+def game_over_function(score,time_duration_count):
+    font=pygame.font.Font(None,74)
+    text=font.render("Game Over",1,cfg.WHITE)
+    screen.blit(text,(200,150))
+    pygame.display.flip()
+
+    player_score_and_time_show_in_display(score,time_duration_count)
+
+    pygame.time.wait(3000)
+
+def brick_and_ball_collision_detection(ball,brick,score,time_duration_count):
+    ball.bounce()
+    ball.kill()
+    brick.kill()
+    balls.remove(ball)
+            
+    if len(all_bricks) ==0:
+        game_win_function(score,time_duration_count)
+        carryOn=False
+        return carryOn
+def ball_fire_to_bricks_from_paddle(ball,paddle,score,time_duration_count):
+      # ball=Ball(WHITE,10,10)
+        all_sprites_list.add(ball)
+        ball.rect.x=paddle.rect.x+50
+        ball.rect.y=paddle.rect.y
+        balls.append(ball)
+
+        for brick in all_bricks:
+            brick.rect.y += 1
+
+        if brick.rect.y > 550:
+            game_over_function(score,time_duration_count)
+            carryOn=False
+            return carryOn
+
+def game_end_display_function(clock,score,time_duration_count):
+    screen.fill(cfg.DARKBLUE)
+    pygame.draw.line(screen,cfg.WHITE,[0,38],[800,38],2)
+    all_sprites_list.draw(screen)
+   
+    score_and_time_duration_calucation(score,time_duration_count)
+    pygame.display.flip()
+    clock.tick(100)
     
+
+def aircraft_shooter_game_screen(carryOn,all_sprites_list,all_bricks,paddle,ball,balls,clock,score,time_duration_count):
+    
+    while carryOn: 
+        for event in pygame.event.get():
+            if event.type ==pygame.QUIT:
+                carryOn=False    
+        keys=pygame.key.get_pressed()
+        if keys[pygame.K_LEFT]:
+            paddle.moveLeft(5)
+        if keys[pygame.K_RIGHT]:
+            paddle.moveRight(5)
+        if keys[pygame.K_DOWN]:
+            paddle.moveDown(5)
+             
+        if keys[pygame.K_UP]:            
+            game_end=ball_fire_to_bricks_from_paddle(ball,paddle,score,time_duration_count)
+            if game_end == False:
+                carryOn=False
+        
+        
+        all_sprites_list.update()
+        for ball in balls:
+            brick_collision_list=pygame.sprite.spritecollide(ball,all_bricks,False)     
+            for brick in brick_collision_list:
+                score +=1
+                game_end=brick_and_ball_collision_detection(ball,brick,score,time_duration_count)
+                if game_end == False:
+                    carryOn=False
+       
+        time_duration_count+=1
+        game_end_display_function(clock,score,time_duration_count)      
+    pygame.quit()
+        
+
+
+if __name__ == "__main__":
+
+    # make a game start menu program
+    clock = pygame.time.Clock()
+    font = pygame.font.SysFont(None, 30)
+    screen = pygame.display.set_mode((cfg.WINDOW_WIDTH, cfg.WINDOW_HEIGHT),0,32)
+    click = False
+    while True:
+        screen.fill((0,190,255))
+        draw_text('Shooter Aircraft Breakout Game', pygame.font.SysFont(None, 45), (0,0,255), screen, 200, 100)
+        mx, my = pygame.mouse.get_pos()
+
+        #creating buttons
+        button_1 = pygame.Rect(300, 200, 200, 50)
+        button_2 = pygame.Rect(300, 300, 200, 50)
+        button_3 = pygame.Rect(300,400, 200, 50)
+        
+
+        #defining functions when a certain button is pressed
+        if button_1.collidepoint((mx, my)):
+            if click:
+                carryOn=True
+                # clock=pygame.time.Clock()
+                all_bricks=brick_design_on_display()
+                paddle,ball=paddle_and_ball_initialization()
+                aircraft_shooter_game_screen(carryOn,all_sprites_list,all_bricks,paddle,ball,balls,clock,score,time_duration_count)
+        
+        if button_2.collidepoint((mx, my)):
+            if click:
+                options(screen,font,clock,click)
+        
+        if button_3.collidepoint((mx, my)):
+            if click:
+                pygame.quit()
+                sys.exit()
+        
+        pygame.draw.rect(screen, (255, 0, 0), button_1)
+        pygame.draw.rect(screen, (255, 0, 0), button_2)
+        pygame.draw.rect(screen, (255, 0, 0), button_3)
+
+ 
+        #writing text on top of button
+        draw_text('PLAY', font, (255,255,255), screen, 370, 220)
+        draw_text('Game Rules', font, (255,255,255), screen, 350, 315)
+        draw_text('Exit', font, (255,255,255), screen, 380, 420)
+
+        click = False
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+            if event.type == MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    click = True
+ 
+        pygame.display.update()
+        clock.tick(60)
+
+
+    
+
