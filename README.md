@@ -35,15 +35,19 @@ python main.py
 ![image](images/shooter3.png)
 
 - Select the *PLAY* button for start playing
+
 ![image](images/shooter8.png)
 
 - Random scenario of the game 
+
 ![image](images/shooter9.png)
 
 - Winning of the game with score and time
+
 ![image](images/shooter6.png)
 
 - Lost and game over with score and time
+
 ![image](images/shooter7.png)
 
 
