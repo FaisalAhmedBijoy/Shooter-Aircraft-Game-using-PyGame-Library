@@ -90,18 +90,20 @@ This function is called when the "OPTIONS" button is clicked.
 """
 def options(screen,font,mainClock,click=False):
     running = True
-    game_rules=['- Keyboard button: arrow up -> Shooting',
+    game_rules=['- Keyboard button: space -> Shooting',
+                '- Keyboard button: arrow up -> Paddle movement up',
                 '- Keyboard button: arrow left -> Paddle move left',
-                '- Keyboard button: left -> Paddle move right',
+                '- Keyboard button: arrow right -> Paddle move right',
+                '- Keyboard button: arrow down -> Paddle move down',
                 '- Keyboard button: ESC -> Game exit / back']
     while running:
-        screen.fill((0,0,0))
+        screen.fill((0,190,255))
  
-        draw_text('Game Rules', pygame.font.SysFont(None, 45), (255, 100, 255), screen, 220, 100)
+        draw_text('Game Rules', pygame.font.SysFont(None, 45), (0, 0, 255), screen, 240, 100)
         # draw_text(game_rules[0], font, (255, 255, 255), screen, 20, 20)
         for index,rules in enumerate(game_rules):
             # print(index,rules)
-            draw_text(rules, font, (0, 0, 255), screen, 100, index*20+200)
+            draw_text(rules, font, (100, 0, 0), screen, 100, index*30+200)
 
         for event in pygame.event.get():
             if event.type == QUIT:

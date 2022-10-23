@@ -68,7 +68,7 @@ def score_and_time_duration_calucation(score,time_duration_count):
 def game_win_function(score,time_duration_count):
     font=pygame.font.Font(None,65)
     text=font.render("Win, Congratulations!",1,cfg.WHITE)
-    screen.blit(text,(150,200))
+    screen.blit(text,(200,200))
     pygame.display.flip()
     player_score_and_time_show_in_display(score,time_duration_count)
     pygame.time.wait(3000)
@@ -77,18 +77,18 @@ def game_win_function(score,time_duration_count):
 def player_score_and_time_show_in_display(score,time_duration_count):
     font=pygame.font.Font(None,45)
     text=font.render('Player score: '+str(score),1,cfg.GREEN)
-    screen.blit(text,(200,300))
+    screen.blit(text,(250,300))
     pygame.display.flip()
     
     text=font.render('Total time: '+str(time_duration_count),1,cfg.GREEN)
-    screen.blit(text,(200,350))
+    screen.blit(text,(250,350))
     pygame.display.flip()
 
 
 def game_over_function(score,time_duration_count):
     font=pygame.font.Font(None,74)
     text=font.render("Game Over",1,cfg.WHITE)
-    screen.blit(text,(200,150))
+    screen.blit(text,(220,150))
     pygame.display.flip()
 
     player_score_and_time_show_in_display(score,time_duration_count)
@@ -145,9 +145,13 @@ def aircraft_shooter_game_screen(carryOn,all_sprites_list,all_bricks,paddle,ball
             paddle.moveDown(5)
              
         if keys[pygame.K_UP]:            
+            paddle.moveUp(5)
+
+        if keys[pygame.K_SPACE]:
             game_end=ball_fire_to_bricks_from_paddle(ball,paddle,score,time_duration_count)
             if game_end == False:
                 carryOn=False
+
         
         
         all_sprites_list.update()
