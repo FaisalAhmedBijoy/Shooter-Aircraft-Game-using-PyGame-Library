@@ -13,6 +13,7 @@ from pygame.locals import *
 A function that can be used to write text on our screen and buttons
 """
 def draw_text(text, font, color, surface, x, y):
+    
     textobj = font.render(text, 1, color)
     textrect = textobj.get_rect()
     textrect.topleft = (x, y)
@@ -87,12 +88,21 @@ def game():
 """
 This function is called when the "OPTIONS" button is clicked.
 """
-def options():
+def options(screen,font,mainClock,click=False):
     running = True
+    game_rules=['- Keyboard button: arrow up -> Shooting',
+                '- Keyboard button: arrow left -> Paddle move left',
+                '- Keyboard button: left -> Paddle move right',
+                '- Keyboard button: ESC -> Game exit / back']
     while running:
         screen.fill((0,0,0))
  
-        draw_text('OPTIONS SCREEN', font, (255, 255, 255), screen, 20, 20)
+        draw_text('Game Rules', pygame.font.SysFont(None, 45), (255, 100, 255), screen, 220, 100)
+        # draw_text(game_rules[0], font, (255, 255, 255), screen, 20, 20)
+        for index,rules in enumerate(game_rules):
+            # print(index,rules)
+            draw_text(rules, font, (0, 0, 255), screen, 100, index*20+200)
+
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -111,8 +121,10 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode((600, 300),0,32)
     # A variable to check for the status later
     click = False
+    font = pygame.font.SysFont(None, 30)
     
     #setting font settings
     font = pygame.font.SysFont(None, 30)
-    start_options_menu(screen,font,mainClock,click)
+    options(screen,font,mainClock,click)
+    # start_options_menu(screen,font,mainClock,click)
     

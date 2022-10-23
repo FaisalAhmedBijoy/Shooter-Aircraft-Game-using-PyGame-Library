@@ -10,10 +10,12 @@ from paddle import Paddle
 from ball import Ball
 from brick import Brick
 from game_menu import *
+from pygame.locals import *
 pygame.init()
 
 score=cfg.SCORE
 lives=cfg.LIVES
+font = pygame.font.SysFont(None, 30)
 
 # set window size
 size=(cfg.WINDOW_WIDTH,cfg.WINDOW_HEIGHT)
@@ -158,13 +160,15 @@ if __name__ == "__main__":
     click = False
     while True:
         screen.fill((0,190,255))
-        draw_text('Main Menu', font, (0,0,0), screen, 250, 40)
+        draw_text('Shooter Aircraft Breakout Game', pygame.font.SysFont(None, 45), (0,0,255), screen, 200, 100)
  
         mx, my = pygame.mouse.get_pos()
 
         #creating buttons
-        button_1 = pygame.Rect(200, 100, 200, 50)
-        button_2 = pygame.Rect(200, 180, 200, 50)
+        button_1 = pygame.Rect(300, 200, 200, 50)
+        button_2 = pygame.Rect(300, 300, 200, 50)
+        button_3 = pygame.Rect(300,400, 200, 50)
+        
 
         #defining functions when a certain button is pressed
         if button_1.collidepoint((mx, my)):
@@ -177,13 +181,22 @@ if __name__ == "__main__":
         
         if button_2.collidepoint((mx, my)):
             if click:
-                options()
+                options(screen,font,mainClock,click)
+        
+        if button_3.collidepoint((mx, my)):
+            if click:
+                pygame.quit()
+                sys.exit()
+        
         pygame.draw.rect(screen, (255, 0, 0), button_1)
         pygame.draw.rect(screen, (255, 0, 0), button_2)
+        pygame.draw.rect(screen, (255, 0, 0), button_3)
+
  
         #writing text on top of button
-        draw_text('PLAY', font, (255,255,255), screen, 270, 115)
-        draw_text('OPTIONS', font, (255,255,255), screen, 250, 195)
+        draw_text('PLAY', font, (255,255,255), screen, 370, 220)
+        draw_text('Game Rules', font, (255,255,255), screen, 350, 315)
+        draw_text('Exit', font, (255,255,255), screen, 380, 420)
 
         click = False
         for event in pygame.event.get():
