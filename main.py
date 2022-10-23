@@ -1,9 +1,5 @@
-"""
-Step 1: import pygame library
-"""
-
-
 import sys
+import time
 import pygame
 import config as cfg
 from paddle import Paddle
@@ -11,10 +7,11 @@ from ball import Ball
 from brick import Brick
 from game_menu import *
 from pygame.locals import *
-pygame.init()
 
+pygame.init()
+count=1
 score=cfg.SCORE
-lives=cfg.LIVES
+time_duration_count=cfg.TIME_DURATION_COUNT
 font = pygame.font.SysFont(None, 30)
 
 # set window size
@@ -61,39 +58,54 @@ def brick_design_on_display():
     return all_bricks
    
 
-def score_and_lives(score):
+def score_and_time_duration_calucation(score,time_duration_count):
     font=pygame.font.Font(None,34)
     text=font.render("Score: "+str(score),1,cfg.WHITE)
     screen.blit(text,(20,10))
-    text=font.render("Lives: "+str(lives),1,cfg.WHITE)
-    screen.blit(text,(700,10))
+    text=font.render("Time: "+str(time_duration_count),1,cfg.WHITE)
+    screen.blit(text,(650,10))
 
-def game_win_function():
-    font=pygame.font.Font(None,74)
+def game_win_function(score,time_duration_count):
+    font=pygame.font.Font(None,65)
     text=font.render("Win, Congratulations!",1,cfg.WHITE)
-    screen.blit(text,(150,300))
+    screen.blit(text,(150,200))
     pygame.display.flip()
+    player_score_and_time_show_in_display(score,time_duration_count)
     pygame.time.wait(3000)
 
 
-def game_over_function():
-    font=pygame.font.Font(None,74)
-    text=font.render("Game Over",1,cfg.WHITE)
+def player_score_and_time_show_in_display(score,time_duration_count):
+    font=pygame.font.Font(None,45)
+    text=font.render('Player score: '+str(score),1,cfg.GREEN)
     screen.blit(text,(200,300))
     pygame.display.flip()
+    
+    text=font.render('Total time: '+str(time_duration_count),1,cfg.GREEN)
+    screen.blit(text,(200,350))
+    pygame.display.flip()
+
+
+def game_over_function(score,time_duration_count):
+    font=pygame.font.Font(None,74)
+    text=font.render("Game Over",1,cfg.WHITE)
+    screen.blit(text,(200,150))
+    pygame.display.flip()
+
+    player_score_and_time_show_in_display(score,time_duration_count)
+
     pygame.time.wait(3000)
 
-def brick_and_ball_collision_detection(ball,brick):
+def brick_and_ball_collision_detection(ball,brick,score,time_duration_count):
     ball.bounce()
     ball.kill()
     brick.kill()
     balls.remove(ball)
             
     if len(all_bricks) ==0:
-        game_win_function()
+        game_win_function(score,time_duration_count)
         carryOn=False
         return carryOn
-def ball_fire_to_bricks_from_paddle(ball,paddle):
+def ball_fire_to_bricks_from_paddle(ball,paddle,score,time_duration_count):
       # ball=Ball(WHITE,10,10)
         all_sprites_list.add(ball)
         ball.rect.x=paddle.rect.x+50
@@ -104,22 +116,23 @@ def ball_fire_to_bricks_from_paddle(ball,paddle):
             brick.rect.y += 1
 
         if brick.rect.y > 550:
-            game_over_function()
+            game_over_function(score,time_duration_count)
             carryOn=False
             return carryOn
 
-def game_end_display_function(clock,score):
+def game_end_display_function(clock,score,time_duration_count):
     screen.fill(cfg.DARKBLUE)
     pygame.draw.line(screen,cfg.WHITE,[0,38],[800,38],2)
     all_sprites_list.draw(screen)
-    score_and_lives(score)
+   
+    score_and_time_duration_calucation(score,time_duration_count)
     pygame.display.flip()
     clock.tick(100)
     
 
-def aircraft_shooter_game_screen(carryOn,all_sprites_list,all_bricks,paddle,ball,balls,clock,score,lives):
+def aircraft_shooter_game_screen(carryOn,all_sprites_list,all_bricks,paddle,ball,balls,clock,score,time_duration_count):
     
-    while carryOn and lives>0: 
+    while carryOn: 
         for event in pygame.event.get():
             if event.type ==pygame.QUIT:
                 carryOn=False    
@@ -132,21 +145,22 @@ def aircraft_shooter_game_screen(carryOn,all_sprites_list,all_bricks,paddle,ball
             paddle.moveDown(5)
              
         if keys[pygame.K_UP]:            
-            game_end=ball_fire_to_bricks_from_paddle(ball,paddle)
+            game_end=ball_fire_to_bricks_from_paddle(ball,paddle,score,time_duration_count)
             if game_end == False:
-                lives-=1
                 carryOn=False
+        
         
         all_sprites_list.update()
         for ball in balls:
             brick_collision_list=pygame.sprite.spritecollide(ball,all_bricks,False)     
             for brick in brick_collision_list:
                 score +=1
-                game_end=brick_and_ball_collision_detection(ball,brick)
+                game_end=brick_and_ball_collision_detection(ball,brick,score,time_duration_count)
                 if game_end == False:
                     carryOn=False
        
-        game_end_display_function(clock,score)      
+        time_duration_count+=1
+        game_end_display_function(clock,score,time_duration_count)      
     pygame.quit()
         
 
@@ -161,7 +175,6 @@ if __name__ == "__main__":
     while True:
         screen.fill((0,190,255))
         draw_text('Shooter Aircraft Breakout Game', pygame.font.SysFont(None, 45), (0,0,255), screen, 200, 100)
- 
         mx, my = pygame.mouse.get_pos()
 
         #creating buttons
@@ -177,7 +190,7 @@ if __name__ == "__main__":
                 # clock=pygame.time.Clock()
                 all_bricks=brick_design_on_display()
                 paddle,ball=paddle_and_ball_initialization()
-                aircraft_shooter_game_screen(carryOn,all_sprites_list,all_bricks,paddle,ball,balls,clock,score,lives)
+                aircraft_shooter_game_screen(carryOn,all_sprites_list,all_bricks,paddle,ball,balls,clock,score,time_duration_count)
         
         if button_2.collidepoint((mx, my)):
             if click:
