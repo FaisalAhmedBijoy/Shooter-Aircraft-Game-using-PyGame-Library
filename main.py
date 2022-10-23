@@ -87,8 +87,8 @@ def player_score_and_time_show_in_display(score,time_duration_count):
 
 def game_over_function(score,time_duration_count):
     font=pygame.font.Font(None,74)
-    text=font.render("Game Over",1,cfg.WHITE)
-    screen.blit(text,(220,150))
+    text=font.render("You Lost",1,cfg.WHITE)
+    screen.blit(text,(250,150))
     pygame.display.flip()
 
     player_score_and_time_show_in_display(score,time_duration_count)
