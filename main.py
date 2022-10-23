@@ -61,7 +61,7 @@ def brick_design_on_display():
     return all_bricks
    
 
-def score_and_lives():
+def score_and_lives(score):
     font=pygame.font.Font(None,34)
     text=font.render("Score: "+str(score),1,cfg.WHITE)
     screen.blit(text,(20,10))
@@ -108,11 +108,11 @@ def ball_fire_to_bricks_from_paddle(ball,paddle):
             carryOn=False
             return carryOn
 
-def game_end_display_function(clock):
+def game_end_display_function(clock,score):
     screen.fill(cfg.DARKBLUE)
     pygame.draw.line(screen,cfg.WHITE,[0,38],[800,38],2)
     all_sprites_list.draw(screen)
-    score_and_lives()
+    score_and_lives(score)
     pygame.display.flip()
     clock.tick(100)
     
@@ -146,7 +146,7 @@ def aircraft_shooter_game_screen(carryOn,all_sprites_list,all_bricks,paddle,ball
                 if game_end == False:
                     carryOn=False
        
-        game_end_display_function(clock)      
+        game_end_display_function(clock,score)      
     pygame.quit()
         
 
@@ -154,7 +154,7 @@ def aircraft_shooter_game_screen(carryOn,all_sprites_list,all_bricks,paddle,ball
 if __name__ == "__main__":
 
     # make a game start menu program
-    mainClock = pygame.time.Clock()
+    clock = pygame.time.Clock()
     font = pygame.font.SysFont(None, 30)
     screen = pygame.display.set_mode((cfg.WINDOW_WIDTH, cfg.WINDOW_HEIGHT),0,32)
     click = False
@@ -174,14 +174,14 @@ if __name__ == "__main__":
         if button_1.collidepoint((mx, my)):
             if click:
                 carryOn=True
-                clock=pygame.time.Clock()
+                # clock=pygame.time.Clock()
                 all_bricks=brick_design_on_display()
                 paddle,ball=paddle_and_ball_initialization()
                 aircraft_shooter_game_screen(carryOn,all_sprites_list,all_bricks,paddle,ball,balls,clock,score,lives)
         
         if button_2.collidepoint((mx, my)):
             if click:
-                options(screen,font,mainClock,click)
+                options(screen,font,clock,click)
         
         if button_3.collidepoint((mx, my)):
             if click:
@@ -212,8 +212,8 @@ if __name__ == "__main__":
                     click = True
  
         pygame.display.update()
-        mainClock.tick(60)
+        clock.tick(60)
 
-    # game logic start
+
     
 
